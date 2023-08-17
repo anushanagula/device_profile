@@ -36,7 +36,7 @@ class AppBloc {
         _deviceProfiles.hasValue ? _deviceProfiles.value : [];
     profiles.add(newProfile);
     _deviceProfiles.add(profiles);
-    if (changeToCurrent) changeCurrentProfile(id: id);
+    if (changeToCurrent || profiles.length == 1) changeCurrentProfile(id: id);
   }
 
   void updateProfile(

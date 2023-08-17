@@ -24,7 +24,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   ValueNotifier<double> textSize = ValueNotifier<double>(12);
   ValueNotifier<int> themeColor = ValueNotifier<int>(figmaOrange.value);
   Color? _currentThemeColor;
-  bool isChecked = false;
+  bool isChecked = true;
 
   @override
   void initState() {
@@ -36,46 +36,52 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   }
 
   void onSubmit() async {
-    List<DeviceProfile> d = appBloc!.availableDeviceProfiles();
-    bool isUniqueTheme = true;
-    for (int i = 0; i < d.length; i++) {
-      ProfileTheme x = d[i].theme;
-      if (x.textSize == textSize.value && x.themeColor == themeColor.value) {
-        isUniqueTheme = false;
-        break;
-      }
-    }
-    if (isUniqueTheme) {
-      widget.deviceProfile!.theme =
-          ProfileTheme(themeColor: themeColor.value, textSize: textSize.value);
-      var box = Hive.box<DeviceProfile>('device_profiles');
-      if (box.get(widget.deviceProfile!.locationName) != null)
-        appBloc!.updateProfile(
-            changeToCurrent: isChecked,
-            id: widget.deviceProfile!.locationName,
-            themeColor: themeColor.value,
-            textSize: textSize.value);
-      else
-        appBloc!.addprofile(
-            changeToCurrent: isChecked,
-            id: widget.deviceProfile!.locationName,
-            location: widget.deviceProfile!.loc,
-            profileTheme: widget.deviceProfile!.theme);
-      if (buildingForWebDesktop(context))
-        Navigator.pushReplacement(context,
-            PageRouteBuilder(pageBuilder: (_, __, ___) => HomeScreen()));
-      else
-        Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-                pageBuilder: (_, __, ___) => RootScreen(
-                      page: 0,
-                    )));
-    } else
+    if (textSize.value < 5 || textSize.value > 25)
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content:
-            Text("There is a similar theme already.Please use unique settings"),
+        content: Text("Enter font size between 5 to 25"),
       ));
+    else {
+      List<DeviceProfile> d = appBloc!.availableDeviceProfiles();
+      bool isUniqueTheme = true;
+      for (int i = 0; i < d.length; i++) {
+        ProfileTheme x = d[i].theme;
+        if (x.textSize == textSize.value && x.themeColor == themeColor.value) {
+          isUniqueTheme = false;
+          break;
+        }
+      }
+      if (isUniqueTheme) {
+        widget.deviceProfile!.theme = ProfileTheme(
+            themeColor: themeColor.value, textSize: textSize.value);
+        var box = Hive.box<DeviceProfile>('device_profiles');
+        if (box.get(widget.deviceProfile!.locationName) != null)
+          appBloc!.updateProfile(
+              changeToCurrent: isChecked,
+              id: widget.deviceProfile!.locationName,
+              themeColor: themeColor.value,
+              textSize: textSize.value);
+        else
+          appBloc!.addprofile(
+              changeToCurrent: isChecked,
+              id: widget.deviceProfile!.locationName,
+              location: widget.deviceProfile!.loc,
+              profileTheme: widget.deviceProfile!.theme);
+        if (buildingForWebDesktop(context))
+          Navigator.pushReplacement(context,
+              PageRouteBuilder(pageBuilder: (_, __, ___) => HomeScreen()));
+        else
+          Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => RootScreen(
+                        page: 0,
+                      )));
+      } else
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "There is a similar theme already.Please use unique settings"),
+        ));
+    }
   }
 
   void setTheme() async {

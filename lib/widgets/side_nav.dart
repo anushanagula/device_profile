@@ -10,6 +10,7 @@ const double kSideNavWidth = 85;
 
 const DASHBOARD_LAYOUT = "dashboard";
 const PROFILE_LAYOUT = "profiles";
+const ABOUT_US = "about_us";
 
 class SideNav extends StatelessWidget {
   final LayoutPageEnum page;

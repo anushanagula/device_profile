@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:device_profiles/blocks/app_bloc.dart';
 import 'package:device_profiles/constants.dart';
+import 'package:device_profiles/screens/about_us.dart';
 import 'package:device_profiles/screens/device_profiles.dart';
 import 'package:device_profiles/screens/home.dart';
 import 'package:device_profiles/widgets/botton_nav.dart';
@@ -65,8 +65,8 @@ class _RootScreenState extends State<RootScreen> {
     switch (pageNo) {
       // case 5: return UsersManagementScreen();
       case 2:
-        SystemNavigator.routeInformationUpdated(location: DASHBOARD_LAYOUT);
-        return HomeScreen();
+        SystemNavigator.routeInformationUpdated(location: ABOUT_US);
+        return AboutUs();
       case 1:
         SystemNavigator.routeInformationUpdated(location: PROFILE_LAYOUT);
         return ProfileScreen();

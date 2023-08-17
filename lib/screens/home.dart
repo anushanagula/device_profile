@@ -1,15 +1,11 @@
-import 'dart:js_interop';
-
 import 'package:device_profiles/blocks/app_bloc.dart';
 import 'package:device_profiles/constants.dart';
 import 'package:device_profiles/models/device_Profile.dart';
-import 'package:device_profiles/screens/device_profiles.dart';
 import 'package:device_profiles/widgets/header_widget.dart';
 import 'package:device_profiles/widgets/location_dialog.dart';
 import 'package:device_profiles/widgets/location_set_up_dialogbox.dart';
 import 'package:device_profiles/widgets/side_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -77,16 +73,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      '''
-Hii, The current profile is:     ${dp.locationName} 
+                    Expanded(
+                      child: Text(
+                        '''Hii, The current profile is:     ${dp.locationName} 
 The location coordinates are:
 Latitude: ${dp.loc.latitude}
 Longitude: ${dp.loc.longitude}
 theme Settings are:
 font size: ${dp.theme.textSize}
 theme color: Same as the background color''',
-                      style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
+                        softWrap: true,
+                      ),
                     )
                   ]),
             ),
@@ -121,7 +119,7 @@ theme color: Same as the background color''',
                       SizedBox(
                         width: kSideNavWidth,
                       ),
-                      _deviceProfile.isNull
+                      _deviceProfile == null
                           ? LocationSetUpDialog()
                           : SingleChildScrollView(
                               child: homeBody(_deviceProfile!))
@@ -139,10 +137,15 @@ theme color: Same as the background color''',
             builder: (context, snapshot) {
               DeviceProfile? _deviceProfile = appBloc!.currentProfile;
               return SafeArea(
-                  child: _deviceProfile.isNull
+                  child: _deviceProfile == null
                       ? LocationSetUpDialog()
                       : SingleChildScrollView(
-                          child: homeBody(_deviceProfile!)));
+                          child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            homeBody(_deviceProfile),
+                          ],
+                        )));
             }));
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:io';
+
 import 'package:device_profiles/blocks/app_bloc.dart';
 import 'package:device_profiles/constants.dart';
 import 'package:device_profiles/models/device_Profile.dart';
 import 'package:device_profiles/screens/home.dart';
 import 'package:device_profiles/screens/splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,9 +18,11 @@ void main() async {
 }
 
 Future<void> initHiveFunction() async {
-  //Directory directory = await getApplicationDocumentsDirectory();
-  //Hive.init(directory.path);
-  Hive.initFlutter();
+  if (!kIsWeb) {
+    Directory directory = await getApplicationDocumentsDirectory();
+    Hive.init(directory.path);
+  } else
+    Hive.initFlutter();
   Hive.registerAdapter(LocationAdapter());
   Hive.registerAdapter(ProfileThemeAdapter());
   Hive.registerAdapter(DeviceProfileAdapter());
